@@ -1,0 +1,19 @@
+{
+  "name": "gunther-pi",
+  "version": "0.0.1",
+  "description": "Multi-instance OctoPrint setup",
+  "main": "index.js",
+  "scripts": {
+    "mjpg-streamer": "cd ./mjpg-streamer/mjpg-streamer-experimental/ && ./mjpg_streamer"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikedelcastillo/gunther-pi.git"
+  },
+  "author": "Mike del Castillo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mikedelcastillo/gunther-pi/issues"
+  },
+  "homepage": "https://github.com/mikedelcastillo/gunther-pi#readme"
+}
