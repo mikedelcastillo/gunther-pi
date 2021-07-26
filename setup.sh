@@ -14,6 +14,7 @@ apt-get autoremove -y
 
 clear && echo "Install linux dependencies"
 apt-get install -y git --fix-missing
+apt-get install -y ffmpeg --fix-missing
 
 clear && echo "Install node"
 curl -L https://raw.githubusercontent.com/tj/n/master/bin/n -o n
@@ -30,10 +31,10 @@ RULE_FILE="/etc/udev/rules.d/100-camera.rules"
 rm -rf $RULE_FILE
 touch $RULE_FILE
 tee -a $RULE_FILE > /dev/null <<EOT
-KERNEL=="video*", SUBSYSTEMS=="video4linux", ATTR{name}=="camera0", SYMLINK+="octocam0"
-KERNEL=="video*", SUBSYSTEMS=="video4linux", ATTR{name}=="GENERAL WEBCAM: GENERAL WEBCAM", ATTR{index}=="0", SYMLINK+="octocam1"
-KERNEL=="video*", SUBSYSTEMS=="video4linux", ATTR{name}=="GENERAL WEBCAM: GENERAL WEBCAM", ATTR{index}=="0", SYMLINK+="octocam2"
+KERNEL=="video*", SUBSYSTEMS=="video4linux", ATTR{name}=="UVC Camera (046d:0825)", ATTR{index}=="0", SYMLINK+="octocam0"
 EOT
+# v4l2-ctl --list-devices
+# udevadm info -a -p $(udevadm info -q path -n /dev/video0)
 
 clear && echo "Setting up mjpeg-streamer"
 apt-get install -y cmake libjpeg8-dev gcc g++
@@ -52,11 +53,8 @@ clear && echo "Setting up pm2"
 pm2 del all
 
 SLEEP_RETRY=300
-pm2 start "npm run camera-1 && sleep $SLEEP_RETRY" --name "camera-1"
-pm2 start "npm run camera-2 && sleep $SLEEP_RETRY" --name "camera-2"
-pm2 start "npm run camera-3 && sleep $SLEEP_RETRY" --name "camera-3"
 
-for i in `seq 0 2`;
+for i in `seq 0 0`;
 do 
     let "PORT=5000+$i"
     CMD="npm run mjpg-streamer -- -i 'input_uvc.so -d /dev/octocam$i -r 1920x1080 -q 24' -o 'output_http.so -w ./www -p $PORT'"
