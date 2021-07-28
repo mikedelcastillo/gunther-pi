@@ -25,16 +25,20 @@ clear && echo "Install node dependencies"
 npm install -g pm2
 npm install
 
-clear && echo "Setting up RPI camera"
+# v4l2-ctl --list-devices
+# udevadm info -a -p $(udevadm info -q path -n /dev/video0)
+
+clear && echo "Setting up camera & printers"
 raspi-config nonint do_camera 0 # Enable the RPI camera
-RULE_FILE="/etc/udev/rules.d/100-camera.rules"
+RULE_FILE="/etc/udev/rules.d/100-devices.rules"
 rm -rf $RULE_FILE
 touch $RULE_FILE
 tee -a $RULE_FILE > /dev/null <<EOT
 KERNEL=="video*", SUBSYSTEMS=="video4linux", ATTR{name}=="UVC Camera (046d:0825)", ATTR{index}=="0", SYMLINK+="octocam0"
 EOT
-# v4l2-ctl --list-devices
-# udevadm info -a -p $(udevadm info -q path -n /dev/video0)
+cat $RULE_FILE
+udevadm control --reload-rules
+/etc/init.d/udev restart
 
 clear && echo "Setting up mjpeg-streamer"
 apt-get install -y cmake libjpeg8-dev gcc g++
