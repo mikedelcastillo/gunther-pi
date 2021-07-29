@@ -35,9 +35,12 @@ rm -rf $RULE_FILE
 touch $RULE_FILE
 tee -a $RULE_FILE > /dev/null <<EOT
 KERNEL=="video*", SUBSYSTEMS=="video4linux", ATTR{name}=="UVC Camera (046d:0825)", ATTR{index}=="0", SYMLINK+="octocam0"
+KERNEL=="video*", SUBSYSTEM=="video4linux", ATTR{name}=="GENERAL WEBCAM: GENERAL WEBCAM", KERNELS=="1-1.1.3:1.0", ATTR{index}=="0", SYMLINK+="octocam1"
+KERNEL=="video*", SUBSYSTEM=="video4linux", ATTR{name}=="GENERAL WEBCAM: GENERAL WEBCAM", KERNELS=="1-1.1.4:1.0", ATTR{index}=="0", SYMLINK+="octocam2"
 EOT
 cat $RULE_FILE
 udevadm control --reload-rules
+udevadm trigger
 /etc/init.d/udev restart
 
 clear && echo "Setting up mjpeg-streamer"
@@ -58,7 +61,7 @@ pm2 del all
 
 SLEEP_RETRY=300
 
-for i in `seq 0 0`;
+for i in `seq 0 2`;
 do 
     let "PORT=5000+$i"
     CMD="npm run mjpg-streamer -- -i 'input_uvc.so -d /dev/octocam$i -r 1920x1080 -q 24' -o 'output_http.so -w ./www -p $PORT'"
