@@ -4,7 +4,8 @@
   "description": "Multi-instance OctoPrint setup",
   "main": "index.js",
   "scripts": {
-    "mjpg-streamer": "cd ./mjpg-streamer/mjpg-streamer-experimental/ && ./mjpg_streamer"
+    "mjpg-streamer": "cd ./mjpg-streamer/mjpg-streamer-experimental/ && ./mjpg_streamer",
+    "octoprint": "./OctoPrint/venv/bin/octoprint"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,6 @@
   "bugs": {
     "url": "https://github.com/mikedelcastillo/gunther-pi/issues"
   },
-  "homepage": "https://github.com/mikedelcastillo/gunther-pi#readme"
+  "homepage": "https://github.com/mikedelcastillo/gunther-pi#readme",
+  "dependencies": {}
 }
